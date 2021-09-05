@@ -1,19 +1,20 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace LogTest
+namespace LogComponent.Interfaces
 {
-    public interface LogInterface
+    public interface ILogger
     {
+        List<LogLine> Lines { get; }
+
         /// <summary>
         /// Stop the logging. If any outstadning logs theses will not be written to Log
         /// </summary>
-        void Stop_Without_Flush();
+        void StopWithoutFlush();
 
         /// <summary>
         /// Stop the logging. The call will not return until all all logs have been written to Log.
         /// </summary>
-        void Stop_With_Flush();
+        void StopWithFlush();
 
         /// <summary>
         /// WriteLog a message to the Log.
@@ -21,6 +22,12 @@ namespace LogTest
         /// <param name="s">The s to written to the log</param>
         void WriteLog(string s);
 
+        void ProcessLogs(IDateTimeProvider dateTimeProvider);
 
+        void MainLoop();
+
+        void Start();
+
+        void Join();
     }
 }

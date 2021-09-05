@@ -43,9 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncLogInterface.cs" />
-    <Compile Include="LogInterface.cs" />
+    <Compile Include="DateTimeProvider.cs" />
+    <Compile Include="Interfaces\IDateTimeProvider.cs" />
+    <Compile Include="Interfaces\ILogStorage.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="LogLine.cs" />
+    <Compile Include="LogStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

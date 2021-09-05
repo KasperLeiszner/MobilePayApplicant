@@ -1,40 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using LogComponent.Interfaces;
+using LogComponent;
 
 namespace LogUsers
 {
-    using System.Threading;
-
-    using LogTest;
-
     class Program
     {
         static void Main(string[] args)
         {
-            LogInterface  logger = new AsyncLogInterface();
+			ILogStorage storage = new LogStorage(@"C:\LogTest");
 
-            for (int i = 0; i < 15; i++)
-            {
-                logger.WriteLog("Number with Flush: " + i.ToString());
-                Thread.Sleep(50);
-            }
+			//With Flush
+			ILogger logger = new Logger(storage);
+			logger.Start();
 
-            logger.Stop_With_Flush();
+			for (int i = 0; i < 15; i++)
+			{
+				try
+				{
+					logger.WriteLog("Number with Flush: " + i.ToString());
+					Thread.Sleep(50);
+				}
+				catch
+				{
+					continue;
+				}
+			}
 
-            LogInterface logger2 = new AsyncLogInterface();
+			logger.StopWithFlush();
 
-            for (int i = 50; i > 0; i--)
-            {
-                logger2.WriteLog("Number with No flush: " + i.ToString());
-                Thread.Sleep(20);
-            }
+			//Without flush
+			ILogger logger2 = new Logger(storage);
+			logger2.Start();
 
-            logger2.Stop_Without_Flush();
+			for (int i = 50; i > 0; i--)
+			{
+				try
+				{
+					if (i == 25)
+						logger2.StopWithoutFlush();
 
-            Console.ReadLine();
-        }
+					logger2.WriteLog("Number with No flush: " + i.ToString());
+					Thread.Sleep(20);
+				}
+				catch
+				{
+					continue;
+				}
+			}
+
+			Console.WriteLine("Done");
+			Console.ReadLine();
+		}
     }
 }

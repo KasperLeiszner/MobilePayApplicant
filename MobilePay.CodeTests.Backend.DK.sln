@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogComponent", "LogComponent\LogComponent.csproj", "{EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{B89796D6-E86E-4A93-ABC7-765A54A260D1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47} = {EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47}
+		{E7E1A7F7-66B8-40C3-B30A-3633C4396AC5} = {E7E1A7F7-66B8-40C3-B30A-3633C4396AC5}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,10 @@ Global
 		{EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE0CC7D7-A1A0-4A16-80E5-8B80B480EB47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B89796D6-E86E-4A93-ABC7-765A54A260D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B89796D6-E86E-4A93-ABC7-765A54A260D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B89796D6-E86E-4A93-ABC7-765A54A260D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B89796D6-E86E-4A93-ABC7-765A54A260D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
