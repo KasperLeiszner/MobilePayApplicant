@@ -2,10 +2,10 @@ using System;
 using Xunit;
 using Moq;
 using LogComponent;
-using LogComponent.Interfaces;
 using System.IO;
 using AutoFixture.Xunit2;
 using System.Threading;
+using CustomLogger;
 
 namespace UnitTests
 {
