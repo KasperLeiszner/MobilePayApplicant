@@ -1,18 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Storage
 {
 	public static class ServiceCollectionExtension
 	{
-		public static void AddFileStorage(this IServiceCollection serviceCollection)
+		public static void AddFileStorage(this IServiceCollection serviceCollection, IConfiguration config)
 		{
-			serviceCollection.AddOptions<FileStorageOptions>("FileStorage:FilePath");
+			serviceCollection.Configure<FileStorageOptions>(config.GetSection("FileStorageOptions"));
 			serviceCollection.AddSingleton<ILogStorage, FileStorage>();
 		}
 	}

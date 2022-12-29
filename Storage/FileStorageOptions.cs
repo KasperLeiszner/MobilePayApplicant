@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Storage;
-public record FileStorageOptions(string FilePath);
-
+﻿namespace Storage;
+public class FileStorageOptions
+{
+	public string FilePath { get; set; }
+}

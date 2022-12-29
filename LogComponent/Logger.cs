@@ -1,45 +1,65 @@
 ﻿using Common;
+using Polly;
 using Storage;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace CustomLogger;
-
-public class Logger : ILogger
+namespace CustomLogger
 {
-	private readonly Queue<Log> _logs = new();
-	private readonly IDateTimeProvider _dateTimeProvider;
-	private readonly ILogStorage _storage;
-
-	private bool _exit;
-	private bool _quitWithFlush;
-
-	public Logger(
-		ILogStorage storage,
-		IDateTimeProvider dateTimeProvider)
+	public class Logger : ILogger
 	{
-		_storage = storage;
-		_dateTimeProvider = dateTimeProvider;
-	}
+		private readonly Queue<Log> _logs;
 
-	public void StopWithoutFlush()
-	{
-		_exit = true;
-	}
+		private readonly ILogStorage _storage;
+		private readonly IDateTimeProvider _dateTimeProvider;
+		private readonly IAsyncPolicy _retryPolicy;
 
-	public void StopWithFlush()
-	{
-		_quitWithFlush = true;
-	}
+		private bool _exit;
+		private bool _exitWithFlush;
 
-	public Task WriteLog(string s)
-	{
-		_logs.Enqueue(new Log(s, _dateTimeProvider.Now()));
+		public Logger(
+			ILogStorage storage, 
+			IDateTimeProvider dateTimeProvider,
+			IAsyncPolicy retryPolicy)
+		{
+			_storage = storage;
+			_dateTimeProvider = dateTimeProvider;
+			_retryPolicy = retryPolicy;
+			_logs = new();
 
-		return Task.CompletedTask;
+			new TaskFactory().StartNew(() => ProcessIncomingLogs());
+		}
+
+		public void StopWithoutFlush()
+		{
+			_exit = true;
+		}
+
+		public void StopWithFlush()
+		{
+			_exitWithFlush = true;
+		}
+
+		public void WriteLog(string logText)
+		{
+			_logs.Enqueue(new Log(logText, _dateTimeProvider.Now()));
+		}
+
+		private bool IsQueueEmpty() => _logs.Count <= 0;
+
+		private Task ProcessIncomingLogs()
+		{
+			while (_exit is false)
+			{
+				if (_exitWithFlush && IsQueueEmpty() is true)
+					break;
+
+				if (IsQueueEmpty() is false)
+					_storage.Save(_logs.Dequeue());
+					//_retryPolicy.ExecuteAsync(() => _storage.Save(_logs.Dequeue()));
+			}
+
+			return Task.CompletedTask;
+		}
 	}
 }

@@ -11,16 +11,15 @@ public class FileStorage : ILogStorage, IDisposable
 	private readonly IDateTimeProvider _dateTimeProvider;
 	private StreamWriter _streamWriter;
 
-	public FileStorage(
-		IOptions<FileStorageOptions> config, 
-		IDateTimeProvider dateTimeProvider)
+	public FileStorage(IOptions<FileStorageOptions> config, IDateTimeProvider dateTimeProvider)
 	{
 		_dateTimeProvider = dateTimeProvider;
-		_streamWriter.AutoFlush = true;
 		_config = config.Value;
 
 		if (!Directory.Exists(_config.FilePath))
 			Directory.CreateDirectory(_config.FilePath);
+
+		_streamWriter = CreateStoragePartition();
 	}
 
 	public Task Save(Log log)
@@ -28,21 +27,24 @@ public class FileStorage : ILogStorage, IDisposable
 		if (log.TimeStamp > _dateTimeProvider.Now())
 			_streamWriter = CreateStoragePartition();
 
-		_streamWriter.Write(
-			"Timestamp ".PadRight(25, ' ') + log.TimeStamp.ToString().PadRight(25, ' ') + 
-			"Data".PadRight(15, ' ') + log + Environment.NewLine);
+		_streamWriter.WriteLine($"{log.TimeStamp}\t{log}");
 
 		return Task.CompletedTask;
 	}
 
 	public void Dispose()
 	{
+		_streamWriter.Flush();
+		_streamWriter.BaseStream.Flush();
 		_streamWriter.Dispose();
 	}
 
-	private StreamWriter CreateStoragePartition()
+	protected StreamWriter CreateStoragePartition()
 	{
-		return File.AppendText(_config.FilePath + @"\Log" + DateTime.Now.ToString("yyyyMMdd HHmmss fff") + ".log");
+		var streamWriter = File.AppendText(_config.FilePath + @"\Log " + DateTime.Now.ToString("yyyyMMdd HHmmss fff") + ".log");
+		streamWriter.WriteLine("Timestamp ".PadRight(25, ' ') + "Data".PadRight(15, ' '));
+
+		return streamWriter;
 	}
 }
 

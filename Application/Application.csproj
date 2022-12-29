@@ -12,4 +12,9 @@
     <ProjectReference Include="..\LogComponent\CustomLogger.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -6,5 +6,5 @@ public interface ILogger
 {
 	public void StopWithoutFlush();
 	public void StopWithFlush();
-	public Task WriteLog(string s);
+	public void WriteLog(string logText);
 }
